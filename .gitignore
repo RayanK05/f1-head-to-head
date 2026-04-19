@@ -4,3 +4,5 @@ __pycache__/
 .env
 .idea/
 cache/
+*.ipynb
+.ipynb_checkpoints/
