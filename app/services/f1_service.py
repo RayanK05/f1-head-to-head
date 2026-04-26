@@ -23,9 +23,11 @@ def get_session_results(year, grand_prix, session_type):
 
     return results.to_dict(orient='records')
 
+
 def get_lap_data(year, grand_prix, session_type):
     session = fastf1.get_session(year, grand_prix, session_type)
     session.load(telemetry=False, weather=False)
+
     laps = session.laps[[
         'Driver',
         'LapNumber',
@@ -39,15 +41,17 @@ def get_lap_data(year, grand_prix, session_type):
         'IsPersonalBest'
     ]].sort_values(by=['Driver', 'LapNumber'])
 
-    laps = laps.dropna(subset=['LapTime'])
-
-    # convert timedeltas to seconds
-    # TODO: move to utils/formatters.py
+    # convert timedeltas to seconds, None if missing
     for col in ['LapTime', 'Sector1Time', 'Sector2Time', 'Sector3Time']:
-        laps[col] = laps[col].dt.total_seconds()
+        laps[col] = laps[col].apply(
+            lambda x: None if pd.isnull(x) else x.total_seconds()
+        ).astype(object)
+    
+    laps = laps.where(laps.notna(), other=None)
 
-    # float columns that should be integers
     laps['LapNumber'] = laps['LapNumber'].astype(int)
     laps['TyreLife'] = laps['TyreLife'].astype(int)
+
+
 
     return laps.to_dict(orient='records')
