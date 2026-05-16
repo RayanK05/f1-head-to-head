@@ -24,7 +24,7 @@ def get_session_results(year, grand_prix, session_type):
     return results.to_dict(orient='records')
 
 
-def get_lap_data(year, grand_prix, session_type):
+def get_lap_data(year, grand_prix, session_type, drivers=None):
     session = fastf1.get_session(year, grand_prix, session_type)
     session.load(telemetry=False, weather=False)
 
@@ -41,6 +41,10 @@ def get_lap_data(year, grand_prix, session_type):
         'IsPersonalBest'
     ]].sort_values(by=['Driver', 'LapNumber'])
 
+    if drivers:
+        laps = laps[laps['Driver'].isin(drivers)]
+
+
     # convert timedeltas to seconds, None if missing
     for col in ['LapTime', 'Sector1Time', 'Sector2Time', 'Sector3Time']:
         laps[col] = laps[col].apply(
@@ -55,3 +59,36 @@ def get_lap_data(year, grand_prix, session_type):
 
 
     return laps.to_dict(orient='records')
+
+def get_driver_summary(driverkey, year, grand_prix, session_type):
+    session = fastf1.get_session(year, grand_prix, session_type)
+    session.load(telemetry=False, weather=False)
+
+    driver_laps = session.laps[
+        (session.laps['Driver'] == driverkey) &
+        (session.laps['IsAccurate'] == True)
+    ] 
+
+    summary = {
+        'abbreviation': driverkey,
+        'full_name': session.results[session.results['Abbreviation'] == driverkey]['FullName'].iloc[0],
+        'first_name': session.results[session.results['Abbreviation'] == driverkey]['FirstName'].iloc[0],
+        'last_name': session.results[session.results['Abbreviation'] == driverkey]['LastName'].iloc[0],
+        'team': session.results[session.results['Abbreviation'] == driverkey]['TeamName'].iloc[0],
+        'team_colour': '#' + session.results[session.results['Abbreviation'] == driverkey]['TeamColor'].iloc[0],
+        'driver_number': session.results[session.results['Abbreviation'] == driverkey]['DriverNumber'].iloc[0],
+        'position': int(session.results[session.results['Abbreviation'] == driverkey]['Position'].iloc[0]),
+        'grid_position': int(session.results[session.results['Abbreviation'] == driverkey]['GridPosition'].iloc[0]),
+        'points': float(session.results[session.results['Abbreviation'] == driverkey]['Points'].iloc[0]),
+        'status': session.results[session.results['Abbreviation'] == driverkey]['Status'].iloc[0],
+        'top_speed': float(driver_laps['SpeedST'].max()),
+        'avg_lap_time': driver_laps['LapTime'].mean().total_seconds(),
+        'avg_sector1': driver_laps['Sector1Time'].mean().total_seconds(),
+        'avg_sector2': driver_laps['Sector2Time'].mean().total_seconds(),
+        'avg_sector3': driver_laps['Sector3Time'].mean().total_seconds(),
+        'fastest_lap': driver_laps['LapTime'].min().total_seconds()
+    }
+
+    return summary
+
+   
