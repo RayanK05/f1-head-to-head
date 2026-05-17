@@ -91,4 +91,13 @@ def get_driver_summary(driverkey, year, grand_prix, session_type):
 
     return summary
 
+def get_comparision(year,grand_prix, session_type, driver1, driver2):
+    summary1 = get_driver_summary(driver1, year, grand_prix, session_type)
+    summary2 = get_driver_summary(driver2, year, grand_prix, session_type)
+
+    return {
+        'driver1': summary1,
+        'driver2': summary2
+    }
+
    
