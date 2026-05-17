@@ -100,4 +100,18 @@ def get_comparision(year,grand_prix, session_type, driver1, driver2):
         'driver2': summary2
     }
 
+def get_session_info(year, grand_prix, session_type):
+    session = fastf1.get_session(year, grand_prix, session_type)
+    session.load(telemetry=False, weather=False)
+    
+    return {
+        'year': year,
+        'session_type': session_type,
+        'event_name': session.event['EventName'],
+        'country': session.event['Country'],
+        'location': session.event['Location'],
+        'round_number': int(session.event['RoundNumber']),
+        'date': str(session.date.date()),
+        'circuit': session.event['OfficialEventName'],
+    }
    
