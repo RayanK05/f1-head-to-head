@@ -13,11 +13,13 @@ const StatItem = ({
 }: StatItemProps) => {
   return (
     <>
-      <div className="flex flex-col  p-2">
-        <div className="flex text-[#666666]">{label}</div>
+      <div className="flex flex-col gap-1 p-2">
+        <span className="text-[13px] flex text-[#666666] uppercase tracking-widest">
+          {label}
+        </span>
 
         <div
-          className={`flex text-lg ${
+          className={`text-[15px] flex text-lg font-medium ${
             purpleSectorHighlight
               ? "text-[#a78bfa]"
               : fasterHighlight
