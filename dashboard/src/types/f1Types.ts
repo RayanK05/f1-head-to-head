@@ -16,6 +16,7 @@ export interface DriverSummary {
   avg_sector3: number
   fastest_lap: number
   top_speed: number
+  total_laps: number
 }
 
 export interface SessionInfo {
