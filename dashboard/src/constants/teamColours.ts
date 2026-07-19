@@ -9,4 +9,6 @@ export const TEAM_COLOURS: Record<string, string> = {
   'Haas F1 Team': '#B6BABD',
   'Kick Sauber': '#52E252',
   'RB F1 Team': '#6692FF',
+  'Cadillac F1 Team': '#FFFFFF',
+  'Audi Revolut F1 Team': '#C0C0C0',
 }
