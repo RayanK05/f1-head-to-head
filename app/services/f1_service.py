@@ -87,7 +87,8 @@ def get_driver_summary(driverkey, year, grand_prix, session_type):
         'avg_sector2': driver_laps['Sector2Time'].mean().total_seconds(),
         'avg_sector3': driver_laps['Sector3Time'].mean().total_seconds(),
         'fastest_lap': driver_laps['LapTime'].min().total_seconds(),
-        'total_laps': len(session.laps[session.laps['Driver'] == driverkey])
+        'total_laps': len(session.laps[session.laps['Driver'] == driverkey]),
+        'total_pits': session.laps[session.laps['Driver'] == driverkey]['PitOutTime'].notnull().sum()
     }
 
     return summary

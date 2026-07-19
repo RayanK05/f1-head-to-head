@@ -17,6 +17,7 @@ export interface DriverSummary {
   fastest_lap: number
   top_speed: number
   total_laps: number
+  pits: number
 }
 
 export interface SessionInfo {
