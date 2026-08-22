@@ -20,7 +20,7 @@ interface DriverCardProps {
   first_name: string;
   last_name: string;
   total_laps: number;
-  pits: number; // Optional property for total pit stops
+  total_pits: number; // Optional property for total pit stops
 }
 
 const DriverCard = ({
@@ -37,8 +37,9 @@ const DriverCard = ({
   avg_lap_time,
   fastest_lap_time,
   total_laps,
-  pits,
+  total_pits,
 }: DriverCardProps) => {
+  const teamColour = TEAM_COLOURS[team] ?? "#FFFFFF";
   return (
     <div>
       <div
@@ -55,6 +56,12 @@ const DriverCard = ({
         >
           {driver_number}
         </span>
+        <h3
+          className="uppercase text-sm tracking-tight font-mono"
+          style={{ color: teamColour }}
+        >
+          {team}
+        </h3>
 
         <h2
           className="text-white uppercase opacity-40"
@@ -122,7 +129,7 @@ const DriverCard = ({
         <div className="grid grid-cols-3 gap-4 mt-4">
           <StatItem
             label="PITS"
-            value={pits}
+            value={total_pits}
             fasterHighlight={false}
             purpleSectorHighlight={false}
           />

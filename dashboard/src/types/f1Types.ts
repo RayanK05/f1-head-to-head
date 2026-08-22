@@ -11,14 +11,17 @@ export interface DriverSummary {
   points: number
   status: string
   avg_lap_time: number
-  avg_sector1: number
-  avg_sector2: number
-  avg_sector3: number
   fastest_lap: number
   top_speed: number
   total_laps: number
-  pits: number
+  total_pits: number
+  // optional — only needed for sector comparison
+  avg_sector1?: number
+  avg_sector2?: number
+  avg_sector3?: number
 }
+
+//TODO: Add more types for the F1 API responses as needed, such as for lap data, pit stops, etc.
 
 export interface SessionInfo {
   year: number

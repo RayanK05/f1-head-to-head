@@ -25,7 +25,7 @@ const ComparisonView = (props: ComparisonViewProps) => {
         avg_lap_time={props.driver1.avg_lap_time}
         fastest_lap_time={props.driver1.fastest_lap}
         total_laps={props.driver1.total_laps}
-        pits={props.driver1.pits}
+        total_pits={props.driver1.total_pits}
       />
       <VsBadge />
       <DriverCard
@@ -42,7 +42,7 @@ const ComparisonView = (props: ComparisonViewProps) => {
         avg_lap_time={props.driver2.avg_lap_time}
         fastest_lap_time={props.driver2.fastest_lap}
         total_laps={props.driver2.total_laps}
-        pits={props.driver2.pits}
+        total_pits={props.driver2.total_pits}
       />
     </div>
   );
