@@ -31,7 +31,7 @@ export interface SessionInfo {
   location: string
   round_number: number
   date: string
-  circuit: string
+  official_event_name: string
 }
 
 export interface ComparisonResponse {
