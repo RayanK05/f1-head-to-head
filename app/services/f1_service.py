@@ -111,7 +111,7 @@ def get_session_info(year, grand_prix, session_type):
         'session_type': session_type,
         'event_name': session.event['EventName'],
         'country': session.event['Country'],
-        'circuit': session.event['Location'],
+        'location': session.event['Location'],
         'round_number': int(session.event['RoundNumber']),
         'date': str(session.date.date()),
         'official_event_name': session.event['OfficialEventName'],
