@@ -1,25 +1,18 @@
 import StatItem from "./StatItem";
 import { COUNTRY_CODES } from "../constants/countryCodes";
+import type { SessionInfo } from "../types/f1Types";
 
 interface SessionHeaderProps {
-  year: number;
-  session_type: string;
-  event_name: string;
-  country: string;
-  location: string;
-  round_number: number;
-  date: string;
-  official_event_name: string;
+  sessionInfo: SessionInfo | null;
 }
 
-const SessionHeader = ({
-  session_type,
-  event_name,
-  location,
-  round_number,
-  date,
-  country,
-}: SessionHeaderProps) => {
+const SessionHeader = ({ sessionInfo }: SessionHeaderProps) => {
+  if (!sessionInfo) {
+    return null;
+  }
+
+  const { country, event_name, location, round_number, date, session_type } =
+    sessionInfo;
   const code = COUNTRY_CODES[country] || "Unknown";
   return (
     <div className="flex items-end justify-between">

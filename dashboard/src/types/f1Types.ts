@@ -21,8 +21,6 @@ export interface DriverSummary {
   avg_sector3?: number
 }
 
-//TODO: Add more types for the F1 API responses as needed, such as for lap data, pit stops, etc.
-
 export interface SessionInfo {
   year: number
   session_type: string

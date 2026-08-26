@@ -8,3 +8,7 @@ const BASE_URL = "http://127.0.0.1:8000";
 export function getDriverSummary(driverId: string, year: number, event: string, sessionType: string) {
     return axios.get<DriverSummary>(`${BASE_URL}/driver_summary/${driverId}/${year}/${event}/${sessionType}`);
 }
+
+export function getSessionInfo(year: number, grand_prix: string, sessionType: string) {
+    return axios.get<SessionInfo>(`${BASE_URL}/sessions/${year}/${grand_prix}/${sessionType}`);
+}
