@@ -14,10 +14,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-from app.routers import drivers, laps, summary, comparisions, sessions
+from app.routers import drivers, laps, summary, comparisions, sessions, schedule
 
 app.include_router(laps.router)
 app.include_router(drivers.router)
 app.include_router(summary.router)
 app.include_router(comparisions.router)
 app.include_router(sessions.router)
+app.include_router(schedule.router)

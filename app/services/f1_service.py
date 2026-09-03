@@ -116,4 +116,18 @@ def get_session_info(year, grand_prix, session_type):
         'date': str(session.date.date()),
         'official_event_name': session.event['OfficialEventName'],
     }
-   
+
+
+def get_event_schedule(year):
+    schedule = fastf1.get_event_schedule(year)
+    
+    # drop testing events — they have RoundNumber 0
+    schedule = schedule[schedule['RoundNumber'] > 0]
+    
+    return [
+    {
+        'round_number': int(row['RoundNumber']),
+        'event_name': row['EventName'],
+    }
+    for _, row in schedule.iterrows()
+]
