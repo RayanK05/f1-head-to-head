@@ -49,3 +49,8 @@ export interface LapData {
   TyreLife: number
   IsPersonalBest: boolean
 }
+
+export interface ScheduleEvent {
+  round_number: number
+  event_name: string
+}

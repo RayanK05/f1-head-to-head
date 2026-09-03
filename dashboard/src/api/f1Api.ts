@@ -12,3 +12,7 @@ export function getDriverSummary(driverId: string, year: number, event: string, 
 export function getSessionInfo(year: number, grand_prix: string, sessionType: string) {
     return axios.get<SessionInfo>(`${BASE_URL}/sessions/${year}/${grand_prix}/${sessionType}`);
 }
+
+export function getEventSchedule(year: number) {
+    return axios.get(`${BASE_URL}/schedule/${year}`);
+}

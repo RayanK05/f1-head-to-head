@@ -10,20 +10,25 @@ import type { DriverSummary } from "./types/f1Types.ts";
 import { getSessionInfo } from "./api/f1Api";
 import type { SessionInfo } from "./types/f1Types.ts";
 
+import { getEventSchedule } from "./api/f1Api";
+import type { ScheduleEvent } from "./types/f1Types.ts";
+
 function App() {
   const [year, setYear] = useState(2026);
   const [grandPrix, setGrandPrix] = useState("Canada"); // Default to Monaco GP
   const [sessionType, setSessionType] = useState("R");
 
   // selections (strings — these drive the fetch)
-  const [driver1Code, setDriver1Code] = useState("LEC");
-  const [driver2Code, setDriver2Code] = useState("VER");
+  const [driver1Code, setDriver1Code] = useState("ALO");
+  const [driver2Code, setDriver2Code] = useState("PIA");
 
   // fetched data (objects — these come back from the API)
   const [driver1Data, setDriver1Data] = useState<DriverSummary | null>(null);
   const [driver2Data, setDriver2Data] = useState<DriverSummary | null>(null);
 
   const [sessionInfo, setSessionInfo] = useState<SessionInfo | null>(null);
+
+  const [schedule, setSchedule] = useState<ScheduleEvent[]>([]);
 
   useEffect(() => {
     // Fetch driver summaries for the selected drivers
@@ -71,13 +76,33 @@ function App() {
     fetchSessionInfo();
   }, [year, grandPrix, sessionType]);
 
-  if (!driver1Data || !driver2Data) {
+  useEffect(() => {
+    // Fetch event scheulde for the selected year
+    const fetchEventSchedule = async () => {
+      try {
+        const scheduleResponse = await getEventSchedule(year);
+        setSchedule(scheduleResponse.data);
+      } catch (error) {
+        console.error("Error fetching event schedule:", error);
+      }
+    };
+
+    fetchEventSchedule();
+  }, [year]);
+
+  if (!driver1Data || !driver2Data || !sessionInfo) {
     return <p className="text-white p-8">Loading…</p>;
   }
 
   return (
     <div className="min-h-screen bg-[#0D0D0D] p-20 flex flex-col gap-8">
-      <TopBar />
+      <TopBar
+        year={year}
+        onYearChange={setYear}
+        grandPrix={grandPrix}
+        onGrandPrixChange={setGrandPrix}
+        schedule={schedule}
+      />
       <SesionHeader sessionInfo={sessionInfo} />
       <ComparisonView driver1={driver1Data} driver2={driver2Data} />
     </div>
