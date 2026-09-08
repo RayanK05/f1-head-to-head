@@ -2,25 +2,18 @@ import fastf1
 import pandas as pd 
 import math
 
-def get_session_results(year, grand_prix, session_type):
+def get_drivers(year, grand_prix, session_type):
     session = fastf1.get_session(year, grand_prix, session_type)
     session.load(telemetry=False, weather=False)
     results = session.results[[
         'DriverNumber', 
-        'Position', 
         'Abbreviation', 
         'FullName', 
-        'TeamName', 
-        'GridPosition', 
-        'Status', 
-        'Points'
-    ]].sort_values(by='Position')
+        'TeamName'
+    ]].sort_values(by='TeamName')
 
     results['DriverNumber'] = results['DriverNumber'].astype(int)
-    results['GridPosition'] = results['GridPosition'].astype(int)
-    results['Points'] = results['Points'].astype(int)
-    results['Position'] = results['Position'].astype(int)
-
+    
     return results.to_dict(orient='records')
 
 
