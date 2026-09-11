@@ -1,4 +1,5 @@
-import type { ScheduleEvent } from "../types/f1Types.ts";
+import type { DriverListItem, ScheduleEvent } from "../types/f1Types.ts";
+import DriverDropdown from "./DriverDropdown.tsx";
 
 interface TopBarProps {
   year: number;
@@ -6,13 +7,24 @@ interface TopBarProps {
   grandPrix: string;
   onGrandPrixChange: (grandPrix: string) => void;
   schedule: ScheduleEvent[];
+  drivers: DriverListItem[]; // Add this line to include the drivers prop
+  driver1: string; // Add this line to include the selected driver 1
+  driver2: string; // Add this line to include the selected driver 2
+  onDriver1Change: (driver: string) => void; // Add this line for driver 1 change handler
+  onDriver2Change: (driver: string) => void; // Add this line for driver 2 change handler
 }
+
 const TopBar = ({
   year,
   onYearChange,
   grandPrix,
   onGrandPrixChange,
   schedule,
+  drivers,
+  driver1,
+  driver2,
+  onDriver1Change,
+  onDriver2Change,
 }: TopBarProps) => {
   return (
     <div className="border-b border-[#2A2A2A] flex items-center justify-between px-6 py-3">
@@ -67,6 +79,19 @@ const TopBar = ({
           <option value="FP2">FP2</option>
           <option value="FP1">FP1</option>
         </select> */}
+      </div>
+
+      <div className="flex gap-3">
+        <DriverDropdown
+          drivers={drivers}
+          selectedDriver={driver1}
+          onDriverChange={onDriver1Change}
+        />
+        <DriverDropdown
+          drivers={drivers}
+          selectedDriver={driver2}
+          onDriverChange={onDriver2Change}
+        />
       </div>
     </div>
   );

@@ -13,14 +13,17 @@ import type { SessionInfo } from "./types/f1Types.ts";
 import { getEventSchedule } from "./api/f1Api";
 import type { ScheduleEvent } from "./types/f1Types.ts";
 
+import { getDrivers } from "./api/f1Api";
+import type { DriverListItem } from "./types/f1Types.ts";
+
 function App() {
   const [year, setYear] = useState(2026);
-  const [grandPrix, setGrandPrix] = useState("Canada"); // Default to Monaco GP
+  const [grandPrix, setGrandPrix] = useState("Australia"); // Default to Monaco GP
   const [sessionType, setSessionType] = useState("R");
 
   // selections (strings — these drive the fetch)
-  const [driver1Code, setDriver1Code] = useState("ALO");
-  const [driver2Code, setDriver2Code] = useState("PIA");
+  const [driver1Code, setDriver1Code] = useState("NOR");
+  const [driver2Code, setDriver2Code] = useState("RUS");
 
   // fetched data (objects — these come back from the API)
   const [driver1Data, setDriver1Data] = useState<DriverSummary | null>(null);
@@ -29,23 +32,29 @@ function App() {
   const [sessionInfo, setSessionInfo] = useState<SessionInfo | null>(null);
 
   const [schedule, setSchedule] = useState<ScheduleEvent[]>([]);
+  const [drivers, setDrivers] = useState<DriverListItem[]>([]);
+
+  useEffect(() => {
+    // Fetch drivers for the selected year, grand prix, and session type
+    const fetchDrivers = async () => {
+      try {
+        const driversResponse = await getDrivers(year, grandPrix, sessionType);
+        setDrivers(driversResponse.data);
+        console.log("Fetched drivers:", driversResponse.data);
+      } catch (error) {
+        console.error("Error fetching drivers:", error);
+      }
+    };
+
+    fetchDrivers();
+  }, [year, grandPrix, sessionType]);
 
   useEffect(() => {
     // Fetch driver summaries for the selected drivers
     const fetchDriverSummaries = async () => {
       try {
-        const driver1Response = await getDriverSummary(
-          driver1Code,
-          year,
-          grandPrix,
-          sessionType,
-        );
-        const driver2Response = await getDriverSummary(
-          driver2Code,
-          year,
-          grandPrix,
-          sessionType,
-        );
+        const driver1Response = await getDriverSummary(driver1Code, year, grandPrix, sessionType);
+        const driver2Response = await getDriverSummary(driver2Code, year, grandPrix, sessionType);
 
         // Update state with the fetched driver summaries
         setDriver1Data(driver1Response.data);
@@ -62,11 +71,7 @@ function App() {
     // Fetch session info for the selected year, grand prix, and session type
     const fetchSessionInfo = async () => {
       try {
-        const sessionResponse = await getSessionInfo(
-          year,
-          grandPrix,
-          sessionType,
-        );
+        const sessionResponse = await getSessionInfo(year, grandPrix, sessionType);
         setSessionInfo(sessionResponse.data);
       } catch (error) {
         console.error("Error fetching session info:", error);
@@ -102,6 +107,11 @@ function App() {
         grandPrix={grandPrix}
         onGrandPrixChange={setGrandPrix}
         schedule={schedule}
+        drivers={drivers}
+        driver1={driver1Code}
+        driver2={driver2Code}
+        onDriver1Change={setDriver1Code}
+        onDriver2Change={setDriver2Code}
       />
       <SesionHeader sessionInfo={sessionInfo} />
       <ComparisonView driver1={driver1Data} driver2={driver2Data} />
