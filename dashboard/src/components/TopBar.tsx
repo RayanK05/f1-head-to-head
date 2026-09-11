@@ -86,11 +86,13 @@ const TopBar = ({
           drivers={drivers}
           selectedDriver={driver1}
           onDriverChange={onDriver1Change}
+          excludeDrivers={[driver2]}
         />
         <DriverDropdown
           drivers={drivers}
           selectedDriver={driver2}
           onDriverChange={onDriver2Change}
+          excludeDrivers={[driver1]}
         />
       </div>
     </div>
