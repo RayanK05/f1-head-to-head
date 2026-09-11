@@ -2,20 +2,6 @@ import fastf1
 import pandas as pd 
 import math
 
-def get_drivers(year, grand_prix, session_type):
-    session = fastf1.get_session(year, grand_prix, session_type)
-    session.load(telemetry=False, weather=False)
-    results = session.results[[
-        'DriverNumber', 
-        'Abbreviation', 
-        'FullName', 
-        'TeamName'
-    ]].sort_values(by='TeamName')
-
-    results['DriverNumber'] = results['DriverNumber'].astype(int)
-    
-    return results.to_dict(orient='records')
-
 
 def get_lap_data(year, grand_prix, session_type, drivers=None):
     session = fastf1.get_session(year, grand_prix, session_type)
@@ -124,3 +110,25 @@ def get_event_schedule(year):
     }
     for _, row in schedule.iterrows()
 ]
+
+def get_drivers(year, grand_prix, session_type):
+    session = fastf1.get_session(year, grand_prix, session_type)
+    session.load(telemetry=False, weather=False)
+
+    results = session.results[[
+        'DriverNumber',
+        'Abbreviation',
+        'FullName',
+        'TeamName',
+    ]].sort_values(by='TeamName')
+
+    results['DriverNumber'] = results['DriverNumber'].astype(int)
+
+    results = results.rename(columns={
+        'DriverNumber': 'driver_number',
+        'Abbreviation': 'abbreviation',
+        'FullName': 'full_name',
+        'TeamName': 'team_name',
+    })
+
+    return results.to_dict(orient='records')
