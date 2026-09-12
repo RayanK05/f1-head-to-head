@@ -1,6 +1,7 @@
 import fastf1
 import pandas as pd 
 import math
+import datetime
 
 
 def get_lap_data(year, grand_prix, session_type, drivers=None):
@@ -102,7 +103,11 @@ def get_event_schedule(year):
     
     # drop testing events — they have RoundNumber 0
     schedule = schedule[schedule['RoundNumber'] > 0]
-    
+
+    # drop events that have not yet occurred 
+    now = datetime.datetime.now()
+    schedule = schedule[schedule['Session5DateUtc'] < now]
+
     return [
     {
         'round_number': int(row['RoundNumber']),
