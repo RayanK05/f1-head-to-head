@@ -4,7 +4,7 @@ from fastapi import APIRouter
 router = APIRouter(prefix="/schedule")
 
 @router.get("/{year}")
-def read_session_info(year: int):
+def read_schedule(year: int):
     """
     Get event schedule for a specific year.
     """
