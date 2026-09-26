@@ -1,5 +1,6 @@
 import type { DriverSummary } from "../types/f1Types.ts";
 import SectorBar from "./SectorBar.tsx";
+import { formatLapTime } from "../utils/formatters.ts";
 
 interface SectorComparisonProps {
   driver1: DriverSummary;
@@ -7,15 +8,15 @@ interface SectorComparisonProps {
 }
 
 const SectorComparison = ({ driver1, driver2 }: SectorComparisonProps) => {
+  const fasterDriver = driver1.avg_lap_time < driver2.avg_lap_time ? driver1 : driver2;
+
   return (
     <div className="bg-[#161616] rounded-xl p-5">
       {/* header row — label left, legend right */}
       <div className="flex items-start justify-between">
         <div>
           <p className="text-[11px] uppercase tracking-widest text-[#666666]">Sector Comparison</p>
-          <h2 className="text-white text-base font-medium mt-1">
-            Fastest average sector time, per driver
-          </h2>
+          <h2 className="text-white text-base font-medium mt-1">Average sector time, per driver</h2>
         </div>
 
         {/* legend */}
@@ -65,13 +66,19 @@ const SectorComparison = ({ driver1, driver2 }: SectorComparisonProps) => {
       {/* cumulative row */}
       <div className="flex items-center justify-between mt-6 pt-4 border-t border-[#2A2A2A]">
         <span className="text-sm" style={{ color: driver1.team_colour }}>
-          {/* driver 1 total */}
+          {formatLapTime(driver1.avg_lap_time)}
         </span>
 
-        <span className="text-xs px-3 py-1.5 rounded-full border">{/* Δ 0.201s · VER */}</span>
+        <span
+          className="text-xs px-3 py-1.5 rounded-full border"
+          style={{ borderColor: fasterDriver.team_colour, color: fasterDriver.team_colour }}
+        >
+          Δ {Math.abs(driver1.avg_lap_time - driver2.avg_lap_time).toFixed(3)}s ·{" "}
+          {fasterDriver.abbreviation}{" "}
+        </span>
 
         <span className="text-sm" style={{ color: driver2.team_colour }}>
-          {/* driver 2 total */}
+          {formatLapTime(driver2.avg_lap_time)}
         </span>
       </div>
     </div>
