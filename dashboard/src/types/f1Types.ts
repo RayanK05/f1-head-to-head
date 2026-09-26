@@ -15,10 +15,9 @@ export interface DriverSummary {
   top_speed: number;
   total_laps: number;
   total_pits: number;
-  // optional — only needed for sector comparison
-  avg_sector1?: number;
-  avg_sector2?: number;
-  avg_sector3?: number;
+  avg_sector1: number | null;
+  avg_sector2: number | null;
+  avg_sector3: number | null;
 }
 
 export interface SessionInfo {

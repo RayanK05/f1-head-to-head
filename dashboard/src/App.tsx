@@ -2,6 +2,8 @@ import "./index.css";
 import ComparisonView from "./components/ComparisonView.tsx";
 import SesionHeader from "./components/SessionHeader.tsx";
 import TopBar from "./components/TopBar.tsx";
+import SectorComparision from "./components/SectorComparision.tsx";
+
 import { useState, useEffect } from "react";
 
 import { getDriverSummary } from "./api/f1Api";
@@ -115,6 +117,7 @@ function App() {
       />
       <SesionHeader sessionInfo={sessionInfo} />
       <ComparisonView driver1={driver1Data} driver2={driver2Data} />
+      <SectorComparision driver1={driver1Data} driver2={driver2Data} />
     </div>
   );
 }
