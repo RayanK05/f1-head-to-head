@@ -3,25 +3,30 @@ import ComparisonView from "./components/ComparisonView.tsx";
 import SesionHeader from "./components/SessionHeader.tsx";
 import TopBar from "./components/TopBar.tsx";
 import SectorComparision from "./components/SectorComparision.tsx";
+import LapChart from "./components/LapChart.tsx";
 
 import { useState, useEffect } from "react";
 
-import { getDriverSummary } from "./api/f1Api";
-import type { DriverSummary } from "./types/f1Types.ts";
+import {
+  getDriverSummary,
+  getSessionInfo,
+  getEventSchedule,
+  getDrivers,
+  getLapData,
+} from "./api/f1Api";
 
-import { getSessionInfo } from "./api/f1Api";
-import type { SessionInfo } from "./types/f1Types.ts";
-
-import { getEventSchedule } from "./api/f1Api";
-import type { ScheduleEvent } from "./types/f1Types.ts";
-
-import { getDrivers } from "./api/f1Api";
-import type { DriverListItem } from "./types/f1Types.ts";
+import type {
+  DriverSummary,
+  SessionInfo,
+  ScheduleEvent,
+  DriverListItem,
+  LapData,
+} from "./types/f1Types.ts";
 
 function App() {
   const [year, setYear] = useState(2026);
   const [grandPrix, setGrandPrix] = useState("Australia"); // Default to Monaco GP
-  const [sessionType, setSessionType] = useState("R");
+  const [sessionType] = useState("R");
 
   // selections (strings — these drive the fetch)
   const [driver1Code, setDriver1Code] = useState("NOR");
@@ -36,6 +41,24 @@ function App() {
   const [schedule, setSchedule] = useState<ScheduleEvent[]>([]);
   const [drivers, setDrivers] = useState<DriverListItem[]>([]);
 
+  const [lapData, setLapData] = useState<LapData[]>([]);
+
+  useEffect(() => {
+    // Fetch lap data for the selected year, grand prix, and session type
+    const fetchLapData = async () => {
+      try {
+        const lapDataResponse = await getLapData(year, grandPrix, sessionType, [
+          driver1Code,
+          driver2Code,
+        ]);
+        setLapData(lapDataResponse.data);
+        console.log("Fetched lap data:", lapDataResponse.data);
+      } catch (error) {
+        console.error("Error fetching lap data:", error);
+      }
+    };
+    fetchLapData();
+  }, [year, grandPrix, sessionType, driver1Code, driver2Code]);
   useEffect(() => {
     // Fetch drivers for the selected year, grand prix, and session type
     const fetchDrivers = async () => {
@@ -84,7 +107,7 @@ function App() {
   }, [year, grandPrix, sessionType]);
 
   useEffect(() => {
-    // Fetch event scheulde for the selected year
+    // Fetch event schedule for the selected year
     const fetchEventSchedule = async () => {
       try {
         const scheduleResponse = await getEventSchedule(year);
@@ -118,6 +141,13 @@ function App() {
       <SesionHeader sessionInfo={sessionInfo} />
       <ComparisonView driver1={driver1Data} driver2={driver2Data} />
       <SectorComparision driver1={driver1Data} driver2={driver2Data} />
+      <LapChart
+        lapData={lapData}
+        driver1Code={driver1Code}
+        driver2Code={driver2Code}
+        colour1={driver1Data.team_colour}
+        colour2={driver2Data.team_colour}
+      />
     </div>
   );
 }

@@ -27,3 +27,13 @@ export function getEventSchedule(year: number) {
 export function getDrivers(year: number, grand_prix: string, sessionType: string) {
   return axios.get(`${BASE_URL}/drivers/${year}/${grand_prix}/${sessionType}`);
 }
+
+export function getLapData(
+  year: number,
+  grand_prix: string,
+  sessionType: string,
+  drivers: string[],
+) {
+  const driverParams = drivers.join(",");
+  return axios.get(`${BASE_URL}/laps/${year}/${grand_prix}/${sessionType}?drivers=${driverParams}`);
+}
