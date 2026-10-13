@@ -19,12 +19,16 @@ interface LapChartProps {
 }
 
 const LapChart = ({ lapData, driver1Code, driver2Code, colour1, colour2 }: LapChartProps) => {
-  const data = [
-    { lap: 1, [driver1Code]: 94.2, [driver2Code]: 93.8 },
-    { lap: 2, [driver1Code]: 93.1, [driver2Code]: 92.9 },
-    { lap: 3, [driver1Code]: 93.4, [driver2Code]: 92.7 },
-    { lap: 4, [driver1Code]: 93.0, [driver2Code]: 92.8 },
-  ];
+  const byLap = new Map<number, Record<string, number | null>>();
+
+  for (const lap of lapData) {
+    const row = byLap.get(lap.LapNumber) ?? { lap: lap.LapNumber };
+    row[lap.Driver] = lap.LapTime;
+    byLap.set(lap.LapNumber, row);
+  }
+
+  const data = Array.from(byLap.values()).sort((a, b) => (a.lap as number) - (b.lap as number));
+  console.log("LapChart data:", data);
 
   return (
     <div className="bg-[#161616] rounded-xl p-5 h-80">
