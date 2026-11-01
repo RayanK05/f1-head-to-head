@@ -8,6 +8,8 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
+import { formatLapTime, formatAxisTime } from "../utils/formatters.ts";
+
 import type { LapData } from "../types/f1Types.ts";
 
 interface LapChartProps {
@@ -19,8 +21,10 @@ interface LapChartProps {
 }
 
 const LapChart = ({ lapData, driver1Code, driver2Code, colour1, colour2 }: LapChartProps) => {
+  // Map lap data into a format suitable for recharts: { lap: 1, HAM: 92.871, RUS: 93.123 }
   const byLap = new Map<number, Record<string, number | null>>();
 
+  // Populate the map with lap data
   for (const lap of lapData) {
     const row = byLap.get(lap.LapNumber) ?? { lap: lap.LapNumber };
     row[lap.Driver] = lap.LapTime;
@@ -28,26 +32,38 @@ const LapChart = ({ lapData, driver1Code, driver2Code, colour1, colour2 }: LapCh
   }
 
   const data = Array.from(byLap.values()).sort((a, b) => (a.lap as number) - (b.lap as number));
-  console.log("LapChart data:", data);
+  const lapTimes = lapData.map((l) => l.LapTime).filter((t): t is number => t != null);
+
+  const fastest = Math.min(...lapTimes);
+  const yMin = formatLapTime(Math.floor(fastest - 0.5));
+  const yMax = formatLapTime(Math.ceil(fastest * 1.07));
 
   return (
-    <div className="bg-[#161616] rounded-xl p-5 h-80">
-      <div className="flex items-start justify-between">
-        <div>
-          <p className="text-[11px] uppercase tracking-widest text-[#666666]">
-            Lap-Time Comparison
-          </p>
-          <h2 className="text-white text-base font-medium mt-1">Average lap time, per driver</h2>
-        </div>
-      </div>
+    <div className="bg-black rounded-xl p-5 h-80">
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={data}>
+        <LineChart data={data} style={{ fontFamily: "Inter, sans-serif", outline: "none" }}>
           <CartesianGrid stroke="#1E1E1E" />
-          <XAxis dataKey="lap" stroke="#666666" />
-          <YAxis stroke="#666666" />
-          <Tooltip />
-          <Line dataKey={driver1Code} stroke={colour1} dot={false} />
-          <Line dataKey={driver2Code} stroke={colour2} dot={false} />
+          <XAxis dataKey="lap" />
+          <YAxis
+            stroke="#666666"
+            domain={[yMin, yMax]}
+            tickFormatter={(value) => formatAxisTime(value)}
+            width={70}
+          />
+          <Line dataKey={driver1Code} stroke={colour1} dot={false} strokeWidth={3} />
+          <Line dataKey={driver2Code} stroke={colour2} dot={false} strokeWidth={3} />
+          <Tooltip
+            formatter={(value) => formatLapTime(Number(value))}
+            labelFormatter={(label) => `Lap ${label}`}
+            contentStyle={{
+              backgroundColor: "#1E1E1E",
+              border: "1px solid #2A2A2A",
+              borderRadius: 8,
+            }}
+            labelStyle={{ color: "#666666", fontSize: 11 }}
+            itemStyle={{ fontSize: 13 }}
+            cursor={{ stroke: "#444444", strokeDasharray: "3 3" }}
+          />
         </LineChart>
       </ResponsiveContainer>
     </div>

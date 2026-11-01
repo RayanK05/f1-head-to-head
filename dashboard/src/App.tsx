@@ -4,6 +4,7 @@ import SesionHeader from "./components/SessionHeader.tsx";
 import TopBar from "./components/TopBar.tsx";
 import SectorComparision from "./components/SectorComparision.tsx";
 import LapChart from "./components/LapChart.tsx";
+import LapPaceSection from "./components/LapPaceSection.tsx";
 
 import { useState, useEffect } from "react";
 
@@ -29,7 +30,7 @@ function App() {
   const [sessionType] = useState("R");
 
   // selections (strings — these drive the fetch)
-  const [driver1Code, setDriver1Code] = useState("NOR");
+  const [driver1Code, setDriver1Code] = useState("HAM");
   const [driver2Code, setDriver2Code] = useState("RUS");
 
   // fetched data (objects — these come back from the API)
@@ -141,7 +142,7 @@ function App() {
       <SesionHeader sessionInfo={sessionInfo} />
       <ComparisonView driver1={driver1Data} driver2={driver2Data} />
       <SectorComparision driver1={driver1Data} driver2={driver2Data} />
-      <LapChart
+      <LapPaceSection
         lapData={lapData}
         driver1Code={driver1Code}
         driver2Code={driver2Code}

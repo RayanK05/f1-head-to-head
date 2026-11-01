@@ -22,3 +22,11 @@ export function formatSpeed(speed: number): string {
 export function formatPoints(points: number): string {
   return points % 1 === 0 ? points.toString() : points.toFixed(1)
 }
+
+// formats time for axis labels in the format M:SS:ms
+export function formatAxisTime(seconds: number): string {
+  const mins = Math.floor(seconds / 60);
+  const secs = Math.floor(seconds % 60).toString().padStart(2, "0");
+  const ms = Math.floor((seconds % 1) * 1000).toString().padStart(1, "0");
+  return `${mins}:${secs}:${ms}`;
+}
